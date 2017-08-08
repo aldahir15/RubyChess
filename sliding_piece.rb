@@ -2,7 +2,7 @@ require "byebug"
 
 module SlidingPiece
 
-  HORIZONTAL_MOVES = {
+  MOVES = {
     left: [0, -1],
     right: [0, 1],
     up: [1, 0],
@@ -16,7 +16,7 @@ module SlidingPiece
   def moves
     moves = []
     move_dirs.each do |dir|
-      row, col = HORIZONTAL_MOVES[dir]
+      row, col = MOVES[dir]
       moves += grow_unblocked_moves_in_dir(row, col)
     end
     moves

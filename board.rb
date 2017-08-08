@@ -42,5 +42,5 @@ end
 # b.move_piece([0,0], [1,1])
 # p b.grid
 b = Board.new
-r = Queen.new(b, [0,0], "black")
+r = Knight.new(b, [0,0], "black")
 p r.moves
