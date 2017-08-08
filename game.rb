@@ -1,25 +1,49 @@
 require_relative 'board.rb'
 require_relative 'display.rb'
+require_relative 'player.rb'
 
 class Game
-  attr_reader :board, :display
+  attr_reader :board, :display, :player1, :player2
 
-  def initialize(board = Board.new)
+  def initialize(board = Board.new, player1, player2)
     @board = board
     @display = Display.new(@board)
+    @player1 = player1
+    @player2 = player2
+    @current_player = player1
+    @next_player = player2
   end
 
   def play
+    @board[[6,3]] = NullPiece.instance
     until @board.game_over?
       take_turn
+      switch_players!
     end
   end
 
   def take_turn
-    puts "Pick a move (ie. [0,0])"
+    begin
+      @display.render
+      input = @current_player.make_move
+      piece, new_pos = input
+      p @board[piece].moves
+      raise StandardError unless @board[piece].moves.include?(new_pos) && @board[piece].color == @current_player.color
+      @board.move_piece(piece, new_pos)
+    rescue
+      retry
+    ensure
+      @display.render
+    end
+  end
+
+  def switch_players!
+    @current_player, @next_player = @next_player, @current_player
   end
 
 end
 
-new_game = Game.new
-new_game.display.render
+first_player = Player.new("Jose", :black)
+second_player = Player.new("Alex", :white)
+new_game = Game.new(Board.new, first_player, second_player )
+new_game.play

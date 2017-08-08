@@ -3,7 +3,7 @@ require_relative "sliding_piece.rb"
 require_relative "stepping_piece.rb"
 
 class Piece
-  attr_reader :board, :position, :color
+  attr_accessor :board, :position, :color
 
   def initialize(board, position, color)
     @board = board
@@ -14,6 +14,7 @@ class Piece
   def moves
 
   end
+
 
   def to_s
     symbol
@@ -133,7 +134,6 @@ class Pawn < Piece
           row = @position[0] + MOVES[move][0]
           col = @position[1] + MOVES[move][1]
           pos_check = [row,col]
-          p @board[MOVES[move]]
           dir << move if @board[pos_check].class != NullPiece && board.in_range?(pos_check)
         end
         return dir
@@ -154,7 +154,6 @@ class Pawn < Piece
           row = @position[0] + MOVES[move][0]
           col = @position[1] + MOVES[move][1]
           pos_check = [row,col]
-          p @board[MOVES[move]]
           dir << move if @board[pos_check].class != NullPiece
         end
         return dir

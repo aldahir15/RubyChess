@@ -60,14 +60,10 @@ class Board
   end
 
   def move_piece(start_pos, end_pos)
-    begin
-      piece = self[start_pos]
-      # raise StandardError if piece == nil && self[end_pos] != nil
-      self[end_pos] = piece
-      self[start_pos] = NullPiece.instance
-    rescue
-      puts "Bad move!"
-    end
+    piece = self[start_pos]
+    piece.position = end_pos
+    self[end_pos] = piece
+    self[start_pos] = NullPiece.instance
   end
 
   def in_check?(color)
@@ -84,13 +80,12 @@ class Board
     king_moves += self[king_pos].moves unless self[king_pos].moves.empty?
     king_moves << king_pos
     opposing_moves = possible_moves(other_color)
-    p king_moves
     return true if in_check?(color) && king_moves.length == 1
     king_moves.all? { |move| opposing_moves.include?(move) }
   end
 
   def game_over?
-    @board.checkmate?(:black) || @board.checkmate?(:white)
+    self.checkmate?(:black) || self.checkmate?(:white)
   end
 
   def in_range?(pos)

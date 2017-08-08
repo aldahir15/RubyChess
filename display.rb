@@ -49,9 +49,3 @@ end
 # p b.in_check?(:white)
 # p b.checkmate?(:white)
 # d.render
-
-# b = Board.new
-# start_pos = [6,1]
-# # b[start_pos] = "P".colorize(:blue)
-# r = Pawn.new(b, start_pos, :white)
-# p r.at_start_row?
