@@ -3,7 +3,7 @@ require_relative "sliding_piece.rb"
 require_relative "stepping_piece.rb"
 
 class Piece
-  attr_reader :board, :position
+  attr_reader :board, :position, :color
 
   def initialize(board, position, color)
     @board = board
@@ -20,7 +20,7 @@ class Piece
   end
 
   def empty?
-
+    self.is_a?(NullPiece)
   end
 end
 
@@ -31,10 +31,10 @@ class NullPiece < Piece
   end
 
   def color
-     "black"
+     ""
   end
   def symbol
-     "N"
+     " "
   end
 
   def moves
@@ -47,7 +47,8 @@ class Bishop < Piece
   include SlidingPiece
 
   def symbol
-     "B"
+    return "♝" if @color == :black
+    return "♗" if @color == :white
   end
 
   def move_dirs
@@ -59,7 +60,8 @@ class Rook < Piece
   include SlidingPiece
 
   def symbol
-     "R"
+    return "♜" if @color == :black
+    return "♖" if @color == :white
   end
 
   def move_dirs
@@ -70,7 +72,8 @@ end
 class Queen < Piece
   include SlidingPiece
   def symbol
-     "Q"
+    return "♛" if @color == :black
+    return "♕" if @color == :white
   end
 
   def move_dirs
@@ -83,7 +86,8 @@ class King < Piece
   include SteppingPiece
 
   def symbol
-    "K"
+    return "♚" if @color == :black
+    return "♔" if @color == :white
   end
 
   def move_dirs
@@ -95,19 +99,9 @@ class Knight < Piece
 
   include SteppingPiece
 
-  # MOVES = {
-  #   knight1: [2,1],
-  #   knight2: [-2,1],
-  #   knight3: [-2,-1],
-  #   knight4: [2,-1],
-  #   knight5: [1,2],
-  #   knight6: [1,-2],
-  #   knight7: [-1,2],
-  #   knight8: [-1,-2]
-  # }
-
   def symbol
-    "L"
+    return "♞" if @color == :black
+    return "♘" if @color == :white
   end
 
   def move_dirs
@@ -115,5 +109,75 @@ class Knight < Piece
   end
 end
 
-# r = Rook.new(Board.new, [0,0], "black")
-# p r.moves
+class Pawn < Piece
+
+  include SteppingPiece
+
+  MOVES = {
+    up_right: [1, 1],
+    up_left: [1, -1],
+    down_right: [-1, 1],
+    down_left: [-1, -1],
+  }
+
+  def symbol
+    return "♟" if @color == :black
+    return "♙" if @color == :white
+  end
+
+  def move_dirs
+    if at_start_row?
+      if @color == :black
+        dir =[:up, :init_up]
+        [:up_left, :up_right].each do |move|
+          row = @position[0] + MOVES[move][0]
+          col = @position[1] + MOVES[move][1]
+          pos_check = [row,col]
+          p @board[MOVES[move]]
+          dir << move if @board[pos_check].class != NullPiece && board.in_range?(pos_check)
+        end
+        return dir
+      else
+        dir =[:down, :init_down]
+        [:down_left, :down_right].each do |move|
+          row = @position[0] + MOVES[move][0]
+          col = @position[1] + MOVES[move][1]
+          pos_check = [row,col]
+          dir << move if @board[pos_check].class != NullPiece
+        end
+        return dir
+      end
+    else
+      if @color == :black
+        dir =[:up]
+        [:up_left, :up_right].each do |move|
+          row = @position[0] + MOVES[move][0]
+          col = @position[1] + MOVES[move][1]
+          pos_check = [row,col]
+          p @board[MOVES[move]]
+          dir << move if @board[pos_check].class != NullPiece
+        end
+        return dir
+      else
+        dir =[:down]
+        [:down_left, :down_right].each do |move|
+          row = @position[0] + MOVES[move][0]
+          col = @position[1] + MOVES[move][1]
+          pos_check = [row,col]
+          dir << move if @board[pos_check].class != NullPiece
+        end
+        return dir
+      end
+    end
+  end
+
+  def at_start_row?
+    if @color == :black
+      return true if @position[0] == 1
+    else
+      return true if @position[0] == 6
+    end
+    false
+  end
+
+end

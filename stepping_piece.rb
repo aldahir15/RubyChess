@@ -16,7 +16,9 @@ module SteppingPiece
     knight5: [1,2],
     knight6: [1,-2],
     knight7: [-1,2],
-    knight8: [-1,-2]
+    knight8: [-1,-2],
+    init_up: [2,0],
+    init_down: [-2,0],
   }
 
   def moves
@@ -34,7 +36,9 @@ module SteppingPiece
     current_pos_dup[0] += dx
     current_pos_dup[1] += dy
     unless current_pos_dup[0] < 0 || current_pos_dup[1] < 0
-      moves << current_pos_dup.dup
+      if board.in_range?(current_pos_dup) && @board[current_pos_dup].color != color
+        moves << current_pos_dup.dup
+      end
     end
     moves
   end
