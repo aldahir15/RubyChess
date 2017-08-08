@@ -15,11 +15,12 @@ class Game
   end
 
   def play
-    @board[[6,3]] = NullPiece.instance
     until @board.game_over?
       take_turn
+      puts "You're in check" if @board.in_check?(@next_player.color)
       switch_players!
     end
+    puts "Checkmate!"
   end
 
   def take_turn
@@ -27,7 +28,7 @@ class Game
       @display.render
       input = @current_player.make_move
       piece, new_pos = input
-      p @board[piece].moves
+      # p @board[piece].moves
       raise StandardError unless @board[piece].moves.include?(new_pos) && @board[piece].color == @current_player.color
       @board.move_piece(piece, new_pos)
     rescue

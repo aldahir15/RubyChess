@@ -78,10 +78,13 @@ class Board
     king_pos = find_king(color)
     king_moves = []
     king_moves += self[king_pos].moves unless self[king_pos].moves.empty?
-    king_moves << king_pos
+    # king_moves << king_pos
     opposing_moves = possible_moves(other_color)
-    return true if in_check?(color) && king_moves.length == 1
-    king_moves.all? { |move| opposing_moves.include?(move) }
+    opposing_moves += find_all_pieces_of_color(other_color)
+    # p "king_moves: #{king_moves}"
+    # p "opposing moves: #{opposing_moves.sort}"
+    # return true if in_check?(color) && king_moves.length == 1
+    king_moves.all? { |move| opposing_moves.include?(move) } && in_check?(color)
   end
 
   def game_over?
@@ -115,6 +118,16 @@ class Board
         end
       end
     end
+  end
+
+  def find_all_pieces_of_color(color)
+    arr = []
+    @grid.each_with_index do |row, row_idx|
+      row.each_with_index do |el, col_idx|
+        arr << [row_idx, col_idx] if el.color == color
+      end
+    end
+    arr
   end
 
 end
