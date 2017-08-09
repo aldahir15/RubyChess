@@ -15,6 +15,8 @@ class Game
   end
 
   def play
+    system "clear"
+    @display.render
     until @board.game_over?
       take_turn
       puts "You're in check" if @board.in_check?(@next_player.color)
@@ -25,15 +27,17 @@ class Game
 
   def take_turn
     begin
-      @display.render
       input = @current_player.make_move
       piece, new_pos = input
+      p @display.cursor.cursor_pos = new_pos
       # p @board[piece].moves
       raise StandardError unless @board[piece].moves.include?(new_pos) && @board[piece].color == @current_player.color
       @board.move_piece(piece, new_pos)
     rescue
+      p "SOMETHING WENT WRONG"
       retry
     ensure
+      system "clear"
       @display.render
     end
   end

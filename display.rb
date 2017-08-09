@@ -3,28 +3,32 @@ require_relative 'cursor.rb'
 require 'colorize'
 
 class Display
+  attr_accessor :cursor
 
   def initialize(board)
     @cursor = Cursor.new([0,0],board)
     @board = board
-    # render
-    # new_pos = @cursor.get_input
-    # move(new_pos)
   end
 
   def move(new_pos)
-    curr = @cursor.cursor_pos
-    @board[new_pos] = @board[curr]
+    # curr = @cursor.cursor_pos
+    # @board[new_pos] = @board[curr]
+    @cursor.cursor_pos = new_pos
     # @board[curr] = NullPiece.instance()
   end
 
   def render
     puts "  #{(0...@board.grid.size).to_a.join(" ")}"
     @board.grid.each_with_index do |row, i|
-      puts "#{i} #{row.map do |x|
-       x
+      puts "#{i} #{row.map.with_index do |x,j|
+      if [i,j] == @cursor.cursor_pos
+        x.to_s.colorize(:blue)
+      else
+        x
+      end
       end.join(" ")}"
     end
+    p @cursor.cursor_pos
   end
 end
 
